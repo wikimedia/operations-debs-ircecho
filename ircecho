@@ -5,6 +5,8 @@
 # Written by Kate Turner <kate.turner@gmail.com>, source is in the public domain.
 # Modified by Ryan Lane <rlane@wikimedia.org> for watching and taking input for files.
 # Changes are also public domain.
+# Modified by Ryan Anderson <ryan@michonline.com> to handle
+# disconnections more gracefully. Changes in the public domain.
 
 import sys
 import pyinotify
@@ -12,6 +14,7 @@ import threading
 import random
 import string
 import re
+import irclib # for exceptions.
 from optparse import OptionParser
 from ircbot import SingleServerIRCBot
 
@@ -121,9 +124,14 @@ class EchoBot(SingleServerIRCBot):
 class EventHandler(pyinotify.ProcessEvent):
 	def process_IN_MODIFY(self, event):
 		s = reader.readfile(event.pathname)
+		s = s.rstrip('\n')
 		if s:
 			chans = reader.getchannels(event.pathname)
-			bot.connection.privmsg(chans, s)
+                        try:
+                                bot.connection.privmsg(chans, s)
+                        except irclib.ServerNotConnectedError, e:
+                                print ("Error writing: %s\n"
+                                       "Dropping this message: '%s'") % (e, s)
 
 	def process_IN_CREATE(self, event):
 		try:
