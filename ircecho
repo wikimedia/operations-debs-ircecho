@@ -9,7 +9,6 @@
 # Modified by Ryan Anderson <ryan@michonline.com> to handle disconnections more
 # gracefully. Changes in the public domain.
 
-import sys
 import pyinotify
 import threading
 import random
