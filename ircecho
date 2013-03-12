@@ -2,11 +2,12 @@
 #
 # stdin -> IRC echo bot, with optional file input support.
 #
-# Written by Kate Turner <kate.turner@gmail.com>, source is in the public domain.
-# Modified by Ryan Lane <rlane@wikimedia.org> for watching and taking input for files.
-# Changes are also public domain.
-# Modified by Ryan Anderson <ryan@michonline.com> to handle
-# disconnections more gracefully. Changes in the public domain.
+# Written by Kate Turner <kate.turner@gmail.com>, source is in the public
+# domain.
+# Modified by Ryan Lane <rlane@wikimedia.org> for watching and taking input
+# for files.  Changes are also public domain.
+# Modified by Ryan Anderson <ryan@michonline.com> to handle disconnections more
+# gracefully. Changes in the public domain.
 
 import sys
 import pyinotify
@@ -14,9 +15,10 @@ import threading
 import random
 import string
 import re
-import irclib # for exceptions.
+import irclib  # for exceptions.
 from optparse import OptionParser
 from ircbot import SingleServerIRCBot
+
 
 class EchoNotifier(threading.Thread):
 	def __init__(self, notifier):
@@ -25,6 +27,7 @@ class EchoNotifier(threading.Thread):
 
 	def run(self):
 		self.notifier.loop()
+
 
 class EchoReader(threading.Thread):
 	def __init__(self, infile='', associatedchannel=''):
@@ -66,7 +69,7 @@ class EchoReader(threading.Thread):
 				try:
 					print "Opening: " + filename
 					f = open(filename)
-					f.seek(0,2)
+					f.seek(0, 2)
 					self.files[filename] = f
 				except IOError:
 					print "Failed to open file: " + filename
@@ -92,9 +95,10 @@ class EchoReader(threading.Thread):
 					self.bot.connection.privmsg(self.chans, s)
 				except EOFError:
 					# Once the input is finished, the bot should exit
-					break;
+					break
 				except Exception:
 					pass
+
 	def readfile(self, filename):
 		if self.files[filename]:
 			return self.files[filename].read()
@@ -106,6 +110,7 @@ class EchoReader(threading.Thread):
 			return self.associations[filename]
 		else:
 			return bot.chans
+
 
 class EchoBot(SingleServerIRCBot):
 	def __init__(self, chans, nickname, server):
@@ -121,17 +126,18 @@ class EchoBot(SingleServerIRCBot):
 		for chan in [self.chans]:
 			c.join(chan)
 
+
 class EventHandler(pyinotify.ProcessEvent):
 	def process_IN_MODIFY(self, event):
 		s = reader.readfile(event.pathname)
 		s = s.rstrip('\n')
 		if s:
 			chans = reader.getchannels(event.pathname)
-                        try:
-                                bot.connection.privmsg(chans, s)
-                        except irclib.ServerNotConnectedError, e:
-                                print ("Error writing: %s\n"
-                                       "Dropping this message: '%s'") % (e, s)
+			try:
+				bot.connection.privmsg(chans, s)
+			except irclib.ServerNotConnectedError, e:
+				print ("Error writing: %s\n"
+					"Dropping this message: '%s'") % (e, s)
 
 	def process_IN_CREATE(self, event):
 		try:
@@ -143,7 +149,8 @@ class EventHandler(pyinotify.ProcessEvent):
 
 parser = OptionParser(conflict_handler="resolve")
 parser.set_usage("ircecho [--infile=<filename>] <channel> <nickname> <server>")
-parser.add_option("--infile", dest="infile", help="Read input from the specific file instead of from stdin")
+parser.add_option("--infile", dest="infile",
+	help="Read input from the specific file instead of from stdin")
 (options, args) = parser.parse_args()
 chans = args[0]
 nickname = args[1]
