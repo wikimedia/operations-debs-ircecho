@@ -1,3 +1,9 @@
+ircecho (1.4.1) trusty-wikimedia; urgency=low
+
+  * Simplify file layout and directory structure
+
+ -- Yuvi Panda <yuvipanda@gmail.org>  Tue, 02 Dec 2014 16:30:00 +0530
+
 ircecho (1.4-1) precise-wikimedia; urgency=low
 
   * Build for precise

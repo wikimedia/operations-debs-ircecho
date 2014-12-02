@@ -15,7 +15,7 @@
 
 PATH=/sbin:/usr/sbin:/bin:/usr/bin
 DESC="Input to IRC echoer"
-DAEMON="/usr/ircecho/bin/ircecho"
+DAEMON="/usr/bin/ircecho"
 USER="nobody"
 SCRIPTNAME="/etc/init.d/ircecho"
 NAME="ircecho"
